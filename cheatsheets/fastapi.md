@@ -34,6 +34,7 @@ uvicorn main:app --reload
 ## Path Operations
 
 ### HTTP Methods
+Define different HTTP methods to perform CRUD operations on your resources.
 ```python
 @app.get("/items")
 async def read_items():
@@ -57,6 +58,7 @@ async def partial_update(item_id: int, item: dict):
 ```
 
 ### Path Parameters
+Extract dynamic values from the URL path with automatic type validation.
 ```python
 @app.get("/items/{item_id}")
 async def read_item(item_id: int):
@@ -80,6 +82,7 @@ async def get_model(model_name: ModelName):
 ```
 
 ### Query Parameters
+Handle optional filters, pagination, and search parameters from the URL query string.
 ```python
 @app.get("/items/")
 async def read_items(skip: int = 0, limit: int = 10):
@@ -101,6 +104,7 @@ async def read_items(active: bool = True):
 ## Request Body
 
 ### Pydantic Models
+Accept and validate JSON data sent in POST/PUT requests.
 ```python
 from pydantic import BaseModel
 
@@ -116,6 +120,7 @@ async def create_item(item: Item):
 ```
 
 ### Model with Validation
+Add constraints to ensure data meets business rules before processing.
 ```python
 from pydantic import BaseModel, Field
 
@@ -130,6 +135,7 @@ async def create_item(item: Item):
 ```
 
 ### Nested Models
+Structure complex data with embedded objects and lists.
 ```python
 class Image(BaseModel):
     url: str
@@ -146,6 +152,8 @@ async def create_item(item: Item):
 ```
 
 ## Response Models
+
+Control what data is returned to clients, filtering out sensitive fields.
 
 ### Response Model
 ```python
@@ -164,6 +172,7 @@ async def create_user(user: UserIn) -> UserOut:
 ```
 
 ### Status Codes
+Return appropriate HTTP status codes to indicate operation results.
 ```python
 from fastapi import status
 
@@ -177,6 +186,7 @@ async def delete_item(item_id: int):
 ```
 
 ### Multiple Response Models
+Return different response types based on conditions using union types.
 ```python
 @app.get("/items/{item_id}", response_model=Item | Message)
 async def read_item(item_id: int):
@@ -188,6 +198,7 @@ async def read_item(item_id: int):
 ## Dependencies
 
 ### Basic Dependency
+Reuse common logic across multiple endpoints without code duplication.
 ```python
 from fastapi import Depends
 
@@ -200,6 +211,7 @@ async def read_items(commons: dict = Depends(common_parameters)):
 ```
 
 ### Class Dependencies
+Organize related dependencies into reusable classes for better structure.
 ```python
 class CommonQueryParams:
     def __init__(self, q: str | None = None, skip: int = 0, limit: int = 100):
@@ -213,6 +225,7 @@ async def read_items(commons: CommonQueryParams = Depends()):
 ```
 
 ### Database Dependency
+Manage database sessions with automatic cleanup using generator dependencies.
 ```python
 def get_db():
     db = SessionLocal()
@@ -229,6 +242,7 @@ async def read_users(db: Session = Depends(get_db)):
 ## Authentication
 
 ### OAuth2 Password Bearer
+Secure your API endpoints with token-based authentication.
 ```python
 from fastapi.security import OAuth2PasswordBearer
 
@@ -240,6 +254,7 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
 ```
 
 ### Login Endpoint
+Validate user credentials and issue access tokens.
 ```python
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -252,6 +267,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 ```
 
 ### JWT Tokens
+Create signed tokens with expiration for secure stateless authentication.
 ```python
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
@@ -269,6 +285,7 @@ def create_access_token(data: dict):
 ## Error Handling
 
 ### HTTPException
+Return structured error responses with appropriate status codes and messages.
 ```python
 from fastapi import HTTPException
 
@@ -280,6 +297,7 @@ async def read_item(item_id: int):
 ```
 
 ### Custom Exception Handler
+Define custom error handling logic for specific exception types.
 ```python
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -299,6 +317,7 @@ async def custom_exception_handler(request: Request, exc: CustomException):
 ## Request Data
 
 ### Headers
+Access different parts of the HTTP request beyond URL and body.
 ```python
 from fastapi import Header
 
@@ -308,6 +327,7 @@ async def read_items(user_agent: str | None = Header(None)):
 ```
 
 ### Cookies
+Read browser cookies for session management and preferences.
 ```python
 from fastapi import Cookie
 
@@ -317,6 +337,7 @@ async def read_items(session_id: str | None = Cookie(None)):
 ```
 
 ### Form Data
+Accept HTML form submissions instead of JSON payloads.
 ```python
 from fastapi import Form
 
@@ -326,6 +347,7 @@ async def login(username: str = Form(...), password: str = Form(...)):
 ```
 
 ### File Upload
+Handle file uploads from multipart form data.
 ```python
 from fastapi import File, UploadFile
 
@@ -340,6 +362,8 @@ async def create_upload_file(file: UploadFile):
 ```
 
 ## Background Tasks
+
+Run time-consuming operations after returning the response to avoid blocking.
 
 ```python
 from fastapi import BackgroundTasks
@@ -356,7 +380,10 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
 
 ## Middleware
 
+Process requests and responses globally across all endpoints.
+
 ### CORS
+Enable cross-origin requests from browsers for frontend integration.
 ```python
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -370,6 +397,7 @@ app.add_middleware(
 ```
 
 ### Custom Middleware
+Add custom logic that runs on every request and response.
 ```python
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
@@ -381,6 +409,8 @@ async def add_process_time_header(request: Request, call_next):
 ```
 
 ## WebSockets
+
+Enable real-time bidirectional communication with clients.
 
 ```python
 from fastapi import WebSocket
@@ -396,6 +426,7 @@ async def websocket_endpoint(websocket: WebSocket):
 ## Database Integration
 
 ### SQLAlchemy Setup
+Connect to SQL databases with ORM for easy data persistence.
 ```python
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -409,6 +440,7 @@ Base = declarative_base()
 ```
 
 ### Models
+Define database table structures using Python classes.
 ```python
 from sqlalchemy import Column, Integer, String
 
@@ -420,6 +452,7 @@ class User(Base):
 ```
 
 ### CRUD Operations
+Implement Create, Read, Update, Delete operations with database integration.
 ```python
 @app.post("/users/", response_model=UserOut)
 async def create_user(user: UserIn, db: Session = Depends(get_db)):
@@ -438,6 +471,7 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 ## Testing
 
 ### Test Setup
+Write automated tests for your API endpoints without running a server.
 ```python
 from fastapi.testclient import TestClient
 
@@ -459,7 +493,10 @@ def test_create_item():
 
 ## Advanced Features
 
+Organize and scale your application with modular patterns.
+
 ### APIRouter
+Split large applications into multiple files with separate route modules.
 ```python
 from fastapi import APIRouter
 
@@ -473,6 +510,7 @@ app.include_router(router)
 ```
 
 ### Lifespan Events (Modern)
+Run initialization and cleanup code when the application starts and stops.
 ```python
 from contextlib import asynccontextmanager
 
@@ -488,6 +526,7 @@ app = FastAPI(lifespan=lifespan)
 ```
 
 ### Custom Response
+Return different response types like HTML, files, or redirects instead of JSON.
 ```python
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 

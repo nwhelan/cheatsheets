@@ -100,7 +100,10 @@ cheatsheets/
 
 ## Section Name
 
+Brief explanation of section (only if no H3 subsections below).
+
 ### Subsection
+One-sentence explanation of why you'd use this feature or what problem it solves.
 
 - List item with `inline code`
 - Another item
@@ -114,6 +117,19 @@ def example():
 **Bold text** for emphasis
 *Italic text* for secondary emphasis
 ```
+
+### Writing Guidelines
+
+**Explanatory Sentences:**
+- Add a brief one-sentence explanation after each H3 header
+- If an H2 has no H3 subsections, add explanation after H2
+- Describes **why** you'd use the feature or **what problem it solves**
+- Keep concise - one sentence, ideally under 15 words
+
+**Examples:**
+- "Reuse common logic across multiple endpoints without code duplication"
+- "Extract dynamic values from the URL path with automatic type validation"
+- "Handle file uploads from multipart form data"
 
 ### Supported Languages
 

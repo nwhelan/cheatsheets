@@ -145,18 +145,25 @@ cheatsheets/
    - H3: Subsections (Strings, Lists, etc.)
    - H4: Minor headings (rarely needed)
 
-2. **Content Density:**
+2. **Explanatory Sentences:**
+   - Add a brief one-sentence explanation after H3 headers (and H2 if no H3 present)
+   - Describes **why** you'd use the feature or **what problem it solves**
+   - Keep it concise - one sentence, ideally under 15 words
+   - Example: "Reuse common logic across multiple endpoints without code duplication"
+   - Example: "Extract dynamic values from the URL path with automatic type validation"
+
+3. **Content Density:**
    - Keep concise - aim for single-page print output
    - Use bullet points for quick reference
    - Include code examples for clarity
    - Avoid long paragraphs
 
-3. **Code Blocks:**
+4. **Code Blocks:**
    - Always specify language: \`\`\`python, \`\`\`javascript, \`\`\`bash
    - Keep examples short and focused
    - Include comments for clarity
 
-4. **Inline Code:**
+5. **Inline Code:**
    - Use for commands, variables, function names
    - Example: `variable_name`, `.method()`, `command --flag`
 
@@ -167,11 +174,15 @@ cheatsheets/
 
 ## Section 1
 
+Brief explanation of what this section covers (only if no H3 subsections).
+
 ### Subsection 1.1
+Brief one-sentence explanation of why you'd use this.
 - Point 1: `example`
 - Point 2: `another example`
 
 ### Subsection 1.2
+Describes what problem this solves or when to use it.
 \`\`\`[language]
 code example
 \`\`\`
@@ -179,7 +190,7 @@ code example
 ## Section 2
 
 ### Subsection 2.1
-Description with **bold** and *italic* emphasis.
+One sentence explaining the benefit or use case.
 
 \`\`\`[language]
 more code

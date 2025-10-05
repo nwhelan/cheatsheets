@@ -38,6 +38,7 @@ async def read_root():
 </ul>
 <h2>Path Operations</h2>
 <h3>HTTP Methods</h3>
+<p>Define different HTTP methods to perform CRUD operations on your resources.</p>
 <pre><code class="language-python">@app.get(&quot;/items&quot;)
 async def read_items():
     return [{&quot;item&quot;: &quot;foo&quot;}]
@@ -59,6 +60,7 @@ async def partial_update(item_id: int, item: dict):
     return {&quot;id&quot;: item_id, **item}
 </code></pre>
 <h3>Path Parameters</h3>
+<p>Extract dynamic values from the URL path with automatic type validation.</p>
 <pre><code class="language-python">@app.get(&quot;/items/{item_id}&quot;)
 async def read_item(item_id: int):
     return {&quot;item_id&quot;: item_id}
@@ -80,6 +82,7 @@ async def get_model(model_name: ModelName):
     return {&quot;model&quot;: model_name}
 </code></pre>
 <h3>Query Parameters</h3>
+<p>Handle optional filters, pagination, and search parameters from the URL query string.</p>
 <pre><code class="language-python">@app.get(&quot;/items/&quot;)
 async def read_items(skip: int = 0, limit: int = 10):
     return {&quot;skip&quot;: skip, &quot;limit&quot;: limit}
@@ -98,6 +101,7 @@ async def read_items(active: bool = True):
 </code></pre>
 <h2>Request Body</h2>
 <h3>Pydantic Models</h3>
+<p>Accept and validate JSON data sent in POST/PUT requests.</p>
 <pre><code class="language-python">from pydantic import BaseModel
 
 class Item(BaseModel):
@@ -111,6 +115,7 @@ async def create_item(item: Item):
     return item
 </code></pre>
 <h3>Model with Validation</h3>
+<p>Add constraints to ensure data meets business rules before processing.</p>
 <pre><code class="language-python">from pydantic import BaseModel, Field
 
 class Item(BaseModel):
@@ -123,6 +128,7 @@ async def create_item(item: Item):
     return item
 </code></pre>
 <h3>Nested Models</h3>
+<p>Structure complex data with embedded objects and lists.</p>
 <pre><code class="language-python">class Image(BaseModel):
     url: str
     name: str
@@ -137,6 +143,7 @@ async def create_item(item: Item):
     return item
 </code></pre>
 <h2>Response Models</h2>
+<p>Control what data is returned to clients, filtering out sensitive fields.</p>
 <h3>Response Model</h3>
 <pre><code class="language-python">class UserIn(BaseModel):
     username: str
@@ -152,6 +159,7 @@ async def create_user(user: UserIn) -&gt; UserOut:
     return user  # password filtered out
 </code></pre>
 <h3>Status Codes</h3>
+<p>Return appropriate HTTP status codes to indicate operation results.</p>
 <pre><code class="language-python">from fastapi import status
 
 @app.post(&quot;/items/&quot;, status_code=status.HTTP_201_CREATED)
@@ -163,6 +171,7 @@ async def delete_item(item_id: int):
     return None
 </code></pre>
 <h3>Multiple Response Models</h3>
+<p>Return different response types based on conditions using union types.</p>
 <pre><code class="language-python">@app.get(&quot;/items/{item_id}&quot;, response_model=Item | Message)
 async def read_item(item_id: int):
     if item_id == 0:
@@ -171,6 +180,7 @@ async def read_item(item_id: int):
 </code></pre>
 <h2>Dependencies</h2>
 <h3>Basic Dependency</h3>
+<p>Reuse common logic across multiple endpoints without code duplication.</p>
 <pre><code class="language-python">from fastapi import Depends
 
 def common_parameters(q: str | None = None, skip: int = 0, limit: int = 100):
@@ -181,6 +191,7 @@ async def read_items(commons: dict = Depends(common_parameters)):
     return commons
 </code></pre>
 <h3>Class Dependencies</h3>
+<p>Organize related dependencies into reusable classes for better structure.</p>
 <pre><code class="language-python">class CommonQueryParams:
     def __init__(self, q: str | None = None, skip: int = 0, limit: int = 100):
         self.q = q
@@ -192,6 +203,7 @@ async def read_items(commons: CommonQueryParams = Depends()):
     return commons
 </code></pre>
 <h3>Database Dependency</h3>
+<p>Manage database sessions with automatic cleanup using generator dependencies.</p>
 <pre><code class="language-python">def get_db():
     db = SessionLocal()
     try:
@@ -205,6 +217,7 @@ async def read_users(db: Session = Depends(get_db)):
 </code></pre>
 <h2>Authentication</h2>
 <h3>OAuth2 Password Bearer</h3>
+<p>Secure your API endpoints with token-based authentication.</p>
 <pre><code class="language-python">from fastapi.security import OAuth2PasswordBearer
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=&quot;token&quot;)
@@ -214,6 +227,7 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
     return {&quot;token&quot;: token}
 </code></pre>
 <h3>Login Endpoint</h3>
+<p>Validate user credentials and issue access tokens.</p>
 <pre><code class="language-python">from fastapi.security import OAuth2PasswordRequestForm
 
 @app.post(&quot;/token&quot;)
@@ -224,6 +238,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {&quot;access_token&quot;: user.username, &quot;token_type&quot;: &quot;bearer&quot;}
 </code></pre>
 <h3>JWT Tokens</h3>
+<p>Create signed tokens with expiration for secure stateless authentication.</p>
 <pre><code class="language-python">from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 
@@ -238,6 +253,7 @@ def create_access_token(data: dict):
 </code></pre>
 <h2>Error Handling</h2>
 <h3>HTTPException</h3>
+<p>Return structured error responses with appropriate status codes and messages.</p>
 <pre><code class="language-python">from fastapi import HTTPException
 
 @app.get(&quot;/items/{item_id}&quot;)
@@ -247,6 +263,7 @@ async def read_item(item_id: int):
     return items[item_id]
 </code></pre>
 <h3>Custom Exception Handler</h3>
+<p>Define custom error handling logic for specific exception types.</p>
 <pre><code class="language-python">from fastapi import Request
 from fastapi.responses import JSONResponse
 
@@ -263,6 +280,7 @@ async def custom_exception_handler(request: Request, exc: CustomException):
 </code></pre>
 <h2>Request Data</h2>
 <h3>Headers</h3>
+<p>Access different parts of the HTTP request beyond URL and body.</p>
 <pre><code class="language-python">from fastapi import Header
 
 @app.get(&quot;/items/&quot;)
@@ -270,6 +288,7 @@ async def read_items(user_agent: str | None = Header(None)):
     return {&quot;User-Agent&quot;: user_agent}
 </code></pre>
 <h3>Cookies</h3>
+<p>Read browser cookies for session management and preferences.</p>
 <pre><code class="language-python">from fastapi import Cookie
 
 @app.get(&quot;/items/&quot;)
@@ -277,6 +296,7 @@ async def read_items(session_id: str | None = Cookie(None)):
     return {&quot;session_id&quot;: session_id}
 </code></pre>
 <h3>Form Data</h3>
+<p>Accept HTML form submissions instead of JSON payloads.</p>
 <pre><code class="language-python">from fastapi import Form
 
 @app.post(&quot;/login/&quot;)
@@ -284,6 +304,7 @@ async def login(username: str = Form(...), password: str = Form(...)):
     return {&quot;username&quot;: username}
 </code></pre>
 <h3>File Upload</h3>
+<p>Handle file uploads from multipart form data.</p>
 <pre><code class="language-python">from fastapi import File, UploadFile
 
 @app.post(&quot;/files/&quot;)
@@ -296,6 +317,7 @@ async def create_upload_file(file: UploadFile):
     return {&quot;filename&quot;: file.filename, &quot;size&quot;: len(contents)}
 </code></pre>
 <h2>Background Tasks</h2>
+<p>Run time-consuming operations after returning the response to avoid blocking.</p>
 <pre><code class="language-python">from fastapi import BackgroundTasks
 
 def write_log(message: str):
@@ -308,7 +330,9 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
     return {&quot;message&quot;: &quot;Notification sent&quot;}
 </code></pre>
 <h2>Middleware</h2>
+<p>Process requests and responses globally across all endpoints.</p>
 <h3>CORS</h3>
+<p>Enable cross-origin requests from browsers for frontend integration.</p>
 <pre><code class="language-python">from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
@@ -320,6 +344,7 @@ app.add_middleware(
 )
 </code></pre>
 <h3>Custom Middleware</h3>
+<p>Add custom logic that runs on every request and response.</p>
 <pre><code class="language-python">@app.middleware(&quot;http&quot;)
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
@@ -329,6 +354,7 @@ async def add_process_time_header(request: Request, call_next):
     return response
 </code></pre>
 <h2>WebSockets</h2>
+<p>Enable real-time bidirectional communication with clients.</p>
 <pre><code class="language-python">from fastapi import WebSocket
 
 @app.websocket(&quot;/ws&quot;)
@@ -340,6 +366,7 @@ async def websocket_endpoint(websocket: WebSocket):
 </code></pre>
 <h2>Database Integration</h2>
 <h3>SQLAlchemy Setup</h3>
+<p>Connect to SQL databases with ORM for easy data persistence.</p>
 <pre><code class="language-python">from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -351,6 +378,7 @@ SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 </code></pre>
 <h3>Models</h3>
+<p>Define database table structures using Python classes.</p>
 <pre><code class="language-python">from sqlalchemy import Column, Integer, String
 
 class User(Base):
@@ -360,6 +388,7 @@ class User(Base):
     name = Column(String)
 </code></pre>
 <h3>CRUD Operations</h3>
+<p>Implement Create, Read, Update, Delete operations with database integration.</p>
 <pre><code class="language-python">@app.post(&quot;/users/&quot;, response_model=UserOut)
 async def create_user(user: UserIn, db: Session = Depends(get_db)):
     db_user = User(**user.model_dump())
@@ -375,6 +404,7 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 </code></pre>
 <h2>Testing</h2>
 <h3>Test Setup</h3>
+<p>Write automated tests for your API endpoints without running a server.</p>
 <pre><code class="language-python">from fastapi.testclient import TestClient
 
 client = TestClient(app)
@@ -393,7 +423,9 @@ def test_create_item():
     assert response.json()[&quot;name&quot;] == &quot;Foo&quot;
 </code></pre>
 <h2>Advanced Features</h2>
+<p>Organize and scale your application with modular patterns.</p>
 <h3>APIRouter</h3>
+<p>Split large applications into multiple files with separate route modules.</p>
 <pre><code class="language-python">from fastapi import APIRouter
 
 router = APIRouter(prefix=&quot;/items&quot;, tags=[&quot;items&quot;])
@@ -405,6 +437,7 @@ async def read_items():
 app.include_router(router)
 </code></pre>
 <h3>Lifespan Events (Modern)</h3>
+<p>Run initialization and cleanup code when the application starts and stops.</p>
 <pre><code class="language-python">from contextlib import asynccontextmanager
 
 @asynccontextmanager
@@ -418,6 +451,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 </code></pre>
 <h3>Custom Response</h3>
+<p>Return different response types like HTML, files, or redirects instead of JSON.</p>
 <pre><code class="language-python">from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 
 @app.get(&quot;/html&quot;, response_class=HTMLResponse)
