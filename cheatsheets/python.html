@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Cheat Sheet</title>
+  <link rel="stylesheet" href="../styles/cheatsheet.css">
+  <!-- Prism.js for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body>
+  <div class="cheatsheet-container">
+<h1>Python Quick Reference</h1>
+<h2>Data Types</h2>
+<h3>Strings</h3>
+<ul>
+<li>Creation: <code>str = &quot;hello&quot;</code> or <code>str = &#39;world&#39;</code></li>
+<li>Multi-line: <code>&quot;&quot;&quot;triple quotes&quot;&quot;&quot;</code></li>
+<li>F-strings: <code>f&quot;Hello {name}&quot;</code></li>
+<li>Methods: <code>.upper()</code>, <code>.lower()</code>, <code>.strip()</code>, <code>.split()</code>, <code>.join()</code></li>
+<li>Slicing: <code>str[start:end:step]</code></li>
+</ul>
+<h3>Numbers</h3>
+<ul>
+<li>Integer: <code>x = 42</code></li>
+<li>Float: <code>y = 3.14</code></li>
+<li>Complex: <code>z = 3 + 4j</code></li>
+<li>Operations: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>//</code>, <code>%</code>, <code>**</code></li>
+</ul>
+<h3>Lists</h3>
+<ul>
+<li>Creation: <code>lst = [1, 2, 3]</code></li>
+<li>Append: <code>lst.append(4)</code></li>
+<li>Extend: <code>lst.extend([5, 6])</code></li>
+<li>Insert: <code>lst.insert(0, &#39;first&#39;)</code></li>
+<li>Remove: <code>lst.remove(value)</code>, <code>lst.pop(index)</code></li>
+<li>Comprehension: <code>[x**2 for x in range(10)]</code></li>
+</ul>
+<h3>Dictionaries</h3>
+<ul>
+<li>Creation: <code>d = {&#39;key&#39;: &#39;value&#39;}</code></li>
+<li>Access: <code>d[&#39;key&#39;]</code> or <code>d.get(&#39;key&#39;, default)</code></li>
+<li>Methods: <code>.keys()</code>, <code>.values()</code>, <code>.items()</code></li>
+<li>Update: <code>d.update({&#39;new&#39;: &#39;item&#39;})</code></li>
+<li>Comprehension: <code>{k: v for k, v in items}</code></li>
+</ul>
+<h3>Sets</h3>
+<ul>
+<li>Creation: <code>s = {1, 2, 3}</code> or <code>set([1, 2, 3])</code></li>
+<li>Add: <code>s.add(4)</code></li>
+<li>Remove: <code>s.remove(item)</code>, <code>s.discard(item)</code></li>
+<li>Operations: <code>s1 | s2</code> (union), <code>s1 &amp; s2</code> (intersection), <code>s1 - s2</code> (difference)</li>
+</ul>
+<h3>Tuples</h3>
+<ul>
+<li>Creation: <code>t = (1, 2, 3)</code> or <code>t = 1, 2, 3</code></li>
+<li>Immutable sequence</li>
+<li>Unpacking: <code>a, b, c = t</code></li>
+</ul>
+<h2>Control Flow</h2>
+<h3>Conditionals</h3>
+<pre><code class="language-python">if condition:
+    # code
+elif other_condition:
+    # code
+else:
+    # code
+</code></pre>
+<h3>Ternary Operator</h3>
+<pre><code class="language-python">result = value_if_true if condition else value_if_false
+</code></pre>
+<h3>Loops - For</h3>
+<pre><code class="language-python">for item in iterable:
+    # code
+
+for i, item in enumerate(iterable):
+    # code with index
+
+for key, value in dict.items():
+    # code
+</code></pre>
+<h3>Loops - While</h3>
+<pre><code class="language-python">while condition:
+    # code
+    if break_condition:
+        break
+    if skip_condition:
+        continue
+</code></pre>
+<h3>Match (Python 3.10+)</h3>
+<pre><code class="language-python">match value:
+    case pattern1:
+        # code
+    case pattern2:
+        # code
+    case _:
+        # default
+</code></pre>
+<h2>Functions</h2>
+<h3>Definition</h3>
+<pre><code class="language-python">def function_name(param1, param2=&#39;default&#39;):
+    &quot;&quot;&quot;Docstring&quot;&quot;&quot;
+    return result
+</code></pre>
+<h3>Lambda</h3>
+<pre><code class="language-python">lambda x: x * 2
+lambda x, y: x + y
+</code></pre>
+<h3>Args and Kwargs</h3>
+<pre><code class="language-python">def func(*args, **kwargs):
+    # args is tuple
+    # kwargs is dict
+</code></pre>
+<h3>Decorators</h3>
+<pre><code class="language-python">@decorator
+def function():
+    pass
+
+# Common decorators
+@staticmethod
+@classmethod
+@property
+</code></pre>
+<h2>Classes</h2>
+<h3>Basic Class</h3>
+<pre><code class="language-python">class MyClass:
+    def __init__(self, param):
+        self.param = param
+
+    def method(self):
+        return self.param
+</code></pre>
+<h3>Inheritance</h3>
+<pre><code class="language-python">class Child(Parent):
+    def __init__(self, param):
+        super().__init__(param)
+</code></pre>
+<h3>Magic Methods</h3>
+<ul>
+<li><code>__init__</code>: Constructor</li>
+<li><code>__str__</code>: String representation</li>
+<li><code>__repr__</code>: Developer representation</li>
+<li><code>__len__</code>: Length</li>
+<li><code>__getitem__</code>: Index access</li>
+<li><code>__call__</code>: Make instance callable</li>
+</ul>
+<h2>File Operations</h2>
+<h3>Reading</h3>
+<pre><code class="language-python">with open(&#39;file.txt&#39;, &#39;r&#39;) as f:
+    content = f.read()
+    # or f.readline()
+    # or f.readlines()
+</code></pre>
+<h3>Writing</h3>
+<pre><code class="language-python">with open(&#39;file.txt&#39;, &#39;w&#39;) as f:
+    f.write(&#39;content&#39;)
+    # or f.writelines(lines)
+</code></pre>
+<h3>Modes</h3>
+<ul>
+<li><code>&#39;r&#39;</code>: Read (default)</li>
+<li><code>&#39;w&#39;</code>: Write (overwrite)</li>
+<li><code>&#39;a&#39;</code>: Append</li>
+<li><code>&#39;r+&#39;</code>: Read and write</li>
+<li><code>&#39;b&#39;</code>: Binary mode</li>
+</ul>
+<h2>Error Handling</h2>
+<h3>Try-Except</h3>
+<pre><code class="language-python">try:
+    # risky code
+except ValueError as e:
+    # handle specific error
+except (TypeError, KeyError):
+    # handle multiple errors
+except Exception as e:
+    # catch all
+else:
+    # runs if no exception
+finally:
+    # always runs
+</code></pre>
+<h3>Raising Exceptions</h3>
+<pre><code class="language-python">raise ValueError(&quot;Error message&quot;)
+raise TypeError(f&quot;Invalid type: {type(obj)}&quot;)
+</code></pre>
+<h2>Common Built-ins</h2>
+<h3>Iteration</h3>
+<ul>
+<li><code>range(start, stop, step)</code></li>
+<li><code>enumerate(iterable, start=0)</code></li>
+<li><code>zip(iter1, iter2, ...)</code></li>
+<li><code>map(function, iterable)</code></li>
+<li><code>filter(function, iterable)</code></li>
+</ul>
+<h3>Type Conversion</h3>
+<ul>
+<li><code>int()</code>, <code>float()</code>, <code>str()</code></li>
+<li><code>list()</code>, <code>tuple()</code>, <code>set()</code>, <code>dict()</code></li>
+<li><code>bool()</code></li>
+</ul>
+<h3>Utility</h3>
+<ul>
+<li><code>len(obj)</code>: Length</li>
+<li><code>type(obj)</code>: Type</li>
+<li><code>isinstance(obj, type)</code>: Type check</li>
+<li><code>sorted(iterable)</code>: Sort</li>
+<li><code>reversed(iterable)</code>: Reverse</li>
+<li><code>sum(iterable)</code>: Sum</li>
+<li><code>min(iterable)</code>, <code>max(iterable)</code></li>
+<li><code>all(iterable)</code>, <code>any(iterable)</code></li>
+</ul>
+<h2>List Comprehensions</h2>
+<h3>Basic</h3>
+<pre><code class="language-python">[x for x in range(10)]
+[x**2 for x in range(10)]
+</code></pre>
+<h3>With Condition</h3>
+<pre><code class="language-python">[x for x in range(10) if x % 2 == 0]
+</code></pre>
+<h3>Nested</h3>
+<pre><code class="language-python">[x*y for x in range(3) for y in range(3)]
+</code></pre>
+<h3>Dict/Set Comprehensions</h3>
+<pre><code class="language-python">{x: x**2 for x in range(5)}
+{x for x in range(10) if x % 2 == 0}
+</code></pre>
+<h2>Modules</h2>
+<h3>Import</h3>
+<pre><code class="language-python">import module
+import module as alias
+from module import function
+from module import *
+</code></pre>
+<h3>Common Modules</h3>
+<ul>
+<li><code>os</code>: Operating system</li>
+<li><code>sys</code>: System-specific</li>
+<li><code>json</code>: JSON handling</li>
+<li><code>re</code>: Regular expressions</li>
+<li><code>datetime</code>: Date/time</li>
+<li><code>random</code>: Random numbers</li>
+<li><code>math</code>: Math functions</li>
+<li><code>collections</code>: Data structures</li>
+<li><code>itertools</code>: Iterator tools</li>
+</ul>
+<h2>String Formatting</h2>
+<h3>F-strings (3.6+)</h3>
+<pre><code class="language-python">f&quot;Hello {name}&quot;
+f&quot;Value: {value:.2f}&quot;
+f&quot;{value:10}&quot;  # width
+f&quot;{value:&gt;10}&quot;  # right align
+</code></pre>
+<h3>Format Method</h3>
+<pre><code class="language-python">&quot;Hello {}&quot;.format(name)
+&quot;x={0}, y={1}&quot;.format(x, y)
+&quot;{name}, {age}&quot;.format(name=&quot;Bob&quot;, age=30)
+</code></pre>
+<h3>% Formatting</h3>
+<pre><code class="language-python">&quot;Hello %s&quot; % name
+&quot;x=%d, y=%.2f&quot; % (x, y)
+</code></pre>
+<h2>Context Managers</h2>
+<h3>With Statement</h3>
+<pre><code class="language-python">with open(&#39;file.txt&#39;) as f:
+    # file automatically closed
+</code></pre>
+<h3>Custom Context Manager</h3>
+<pre><code class="language-python">class MyContext:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # cleanup
+        pass
+</code></pre>
+<h2>Generators</h2>
+<h3>Generator Function</h3>
+<pre><code class="language-python">def gen():
+    yield 1
+    yield 2
+    yield 3
+</code></pre>
+<h3>Generator Expression</h3>
+<pre><code class="language-python">(x**2 for x in range(10))
+</code></pre>
+<h2>Type Hints (3.5+)</h2>
+<pre><code class="language-python">def greet(name: str) -&gt; str:
+    return f&quot;Hello {name}&quot;
+
+from typing import List, Dict, Optional, Union
+
+def process(items: List[int]) -&gt; Dict[str, int]:
+    pass
+
+Optional[str]  # str or None
+Union[int, str]  # int or str
+</code></pre>
+
+  </div>
+
+  <!-- Prism.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+</body>
+</html>

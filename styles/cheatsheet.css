@@ -1,0 +1,322 @@
+/* ============================================
+   Cheat Sheet System - Global Stylesheet
+   Optimized for landscape printing (11×8.5" / A4)
+   ============================================ */
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Color Scheme */
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --bg-color: #ffffff;
+  --code-bg: #f7f9fa;
+  --border-color: #dfe6e9;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+
+  /* Spacing */
+  --gap: 1rem;
+  --section-padding: 0.75rem;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--primary-color);
+  background-color: var(--bg-color);
+  padding: 0.5rem;
+  min-height: 100vh;
+}
+
+/* 4-Column Multi-Column Layout */
+.cheatsheet-container {
+  column-count: 4;
+  column-gap: var(--gap);
+  column-fill: balance;
+  /* Allow content to determine height naturally */
+  height: auto;
+}
+
+/* Typography */
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--secondary-color);
+  column-span: all;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  background-color: var(--secondary-color);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-top: 0.6rem;
+  margin-bottom: 0.3rem;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-top: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Lists */
+ul, ol {
+  margin-left: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+li {
+  margin-bottom: 0.15rem;
+  line-height: 1.4;
+}
+
+/* Code Blocks */
+code {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  background-color: var(--code-bg);
+  padding: 0.1rem 0.25rem;
+  border-radius: 2px;
+  color: #d63384;
+}
+
+/* Override for syntax highlighted code */
+pre {
+  background-color: #f8f9fa !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 3px !important;
+  padding: 0.5rem !important;
+  margin: 0.4rem 0 !important;
+  overflow-x: auto;
+  font-family: var(--font-mono) !important;
+  font-size: 9px !important;
+  line-height: 1.4 !important;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+pre code {
+  background: none !important;
+  border: none;
+  padding: 0;
+  font-size: 9px !important;
+  text-shadow: none !important;
+}
+
+/* Prism.js token overrides for better print compatibility */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a737d;
+}
+
+.token.punctuation {
+  color: #24292e;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #005cc5;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #22863a;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #d73a49;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #d73a49;
+}
+
+.token.function,
+.token.class-name {
+  color: #6f42c1;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #e36209;
+}
+
+/* Sections - Keep together */
+.section, h2, h3 {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* Paragraphs */
+p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Strong/Bold */
+strong, b {
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Emphasis/Italic */
+em, i {
+  font-style: italic;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+  font-size: 10px;
+}
+
+th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.4rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+td {
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--border-color);
+}
+
+tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+/* Blockquotes - for important notes */
+blockquote {
+  background-color: #fff9e6;
+  border-left: 4px solid var(--warning-color);
+  padding: 0.5rem 0.75rem;
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
+/* Horizontal Rules */
+hr {
+  border: none;
+  border-top: 2px solid var(--border-color);
+  margin: 1rem 0;
+}
+
+/* Links */
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--secondary-color);
+}
+
+a:hover {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+}
+
+/* Print Optimization */
+@media print {
+  @page {
+    size: landscape;
+    margin: 0.4in;
+  }
+
+  html {
+    /* Force landscape orientation */
+    transform-origin: top left;
+  }
+
+  body {
+    padding: 0;
+    font-size: 9px;
+    min-height: 0;
+  }
+
+  .cheatsheet-container {
+    column-gap: 0.5rem;
+    column-fill: balance;
+    /* Don't constrain height - let columns determine page length */
+    height: auto;
+  }
+
+  /* Remove interactive elements */
+  a {
+    color: var(--primary-color);
+    border: none;
+  }
+
+  /* Ensure code blocks are readable */
+  pre {
+    border: 1px solid #ccc;
+    font-size: 8px;
+  }
+}
+
+/* Screen-only helper for visualization */
+@media screen {
+  body {
+    /* Remove max-width constraint - fill viewport */
+    width: 100%;
+    margin: 0;
+    padding: 1rem;
+  }
+
+  .cheatsheet-container {
+    /* On screen, show full height to visualize print layout */
+    max-height: none;
+  }
+}

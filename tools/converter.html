@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cheat Sheet Converter</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      padding: 2rem;
+      background-color: #f5f7fa;
+      color: #2c3e50;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #7f8c8d;
+      font-size: 1rem;
+    }
+
+    .controls {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .control-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #2c3e50;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #dfe6e9;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    input[type="text"]:focus,
+    input[type="file"]:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      margin: 0;
+      cursor: pointer;
+      font-weight: 400;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #2980b9;
+    }
+
+    .btn-success {
+      background-color: #27ae60;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #229954;
+    }
+
+    .btn-secondary {
+      background-color: #95a5a6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #7f8c8d;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      background-color: #34495e;
+      color: white;
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .panel-content {
+      padding: 1.5rem;
+      flex: 1;
+      overflow: auto;
+    }
+
+    textarea {
+      width: 100%;
+      height: 500px;
+      padding: 1rem;
+      border: 2px solid #dfe6e9;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    #preview {
+      border: 2px solid #dfe6e9;
+      border-radius: 4px;
+      min-height: 500px;
+      background: white;
+    }
+
+    .info-box {
+      background-color: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 4px;
+    }
+
+    .info-box h3 {
+      color: #1976d2;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-box ul {
+      margin-left: 1.5rem;
+      color: #455a64;
+    }
+
+    @media (max-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Cheat Sheet Converter</h1>
+      <p class="subtitle">Convert Markdown to Print-Optimized HTML</p>
+    </header>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="titleInput">Cheat Sheet Title:</label>
+        <input type="text" id="titleInput" placeholder="e.g., Python Quick Reference" value="">
+      </div>
+
+      <div class="control-group">
+        <label for="fileInput">Load Markdown File:</label>
+        <input type="file" id="fileInput" accept=".md,.markdown,.txt">
+      </div>
+
+      <div class="control-group checkbox-group">
+        <input type="checkbox" id="frozenStylesheet">
+        <label for="frozenStylesheet">Include frozen stylesheet (e.g., python-frozen.css)</label>
+      </div>
+
+      <div class="control-group" id="frozenStylesheetPath" style="display: none;">
+        <label for="frozenInput">Frozen Stylesheet Filename:</label>
+        <input type="text" id="frozenInput" placeholder="e.g., python-frozen.css">
+      </div>
+
+      <div class="button-group">
+        <button class="btn-primary" onclick="convertMarkdown()">Convert to HTML</button>
+        <button class="btn-success" onclick="downloadHTML()">Download HTML</button>
+        <button class="btn-secondary" onclick="clearAll()">Clear All</button>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="panel">
+        <div class="panel-header">Markdown Input</div>
+        <div class="panel-content">
+          <textarea id="markdownInput" placeholder="Paste your markdown here or load a file..."></textarea>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">Live Preview</div>
+        <div class="panel-content">
+          <div id="preview"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h3>How to Use:</h3>
+      <ul>
+        <li>Enter a title for your cheat sheet</li>
+        <li>Load a .md file or paste markdown directly into the input area</li>
+        <li>Click "Convert to HTML" to see the preview</li>
+        <li>Click "Download HTML" to save the complete HTML file</li>
+        <li>The generated HTML will automatically link to cheatsheet.css</li>
+        <li>Optionally include a frozen stylesheet for subject-specific style overrides</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Marked.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Prism.js for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+  <script>
+    // Configure marked options
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      headerIds: true,
+      mangle: false
+    });
+
+    // Handle frozen stylesheet checkbox
+    document.getElementById('frozenStylesheet').addEventListener('change', function() {
+      const frozenPathDiv = document.getElementById('frozenStylesheetPath');
+      frozenPathDiv.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Handle file input
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          document.getElementById('markdownInput').value = event.target.result;
+
+          // Auto-populate title from filename if title is empty
+          const titleInput = document.getElementById('titleInput');
+          if (!titleInput.value) {
+            const filename = file.name.replace(/\.(md|markdown|txt)$/i, '');
+            titleInput.value = filename.charAt(0).toUpperCase() + filename.slice(1) + ' Cheat Sheet';
+          }
+
+          // Auto-convert after loading
+          convertMarkdown();
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    // Auto-convert on typing (with debounce)
+    let debounceTimer;
+    document.getElementById('markdownInput').addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(convertMarkdown, 500);
+    });
+
+    function convertMarkdown() {
+      const markdown = document.getElementById('markdownInput').value;
+      if (!markdown) {
+        document.getElementById('preview').innerHTML = '<p style="color: #999; padding: 2rem; text-align: center;">Preview will appear here...</p>';
+        return;
+      }
+
+      try {
+        const html = marked.parse(markdown);
+        document.getElementById('preview').innerHTML = `
+          <div class="cheatsheet-container">
+            ${html}
+          </div>
+        `;
+
+        // Apply the global stylesheet to preview
+        applyStylesheetToPreview();
+
+        // Apply syntax highlighting
+        Prism.highlightAll();
+      } catch (error) {
+        document.getElementById('preview').innerHTML = `<p style="color: red;">Error converting markdown: ${error.message}</p>`;
+      }
+    }
+
+    function applyStylesheetToPreview() {
+      // Create a link element if it doesn't exist
+      let styleLink = document.getElementById('previewStyles');
+      if (!styleLink) {
+        styleLink = document.createElement('link');
+        styleLink.id = 'previewStyles';
+        styleLink.rel = 'stylesheet';
+        styleLink.href = '../styles/cheatsheet.css';
+        document.head.appendChild(styleLink);
+      }
+    }
+
+    function downloadHTML() {
+      const markdown = document.getElementById('markdownInput').value;
+      const title = document.getElementById('titleInput').value || 'Cheat Sheet';
+      const includeFrozen = document.getElementById('frozenStylesheet').checked;
+      const frozenFilename = document.getElementById('frozenInput').value;
+
+      if (!markdown) {
+        alert('Please enter some markdown content first!');
+        return;
+      }
+
+      try {
+        const htmlContent = marked.parse(markdown);
+
+        // Build frozen stylesheet link if needed
+        let frozenLink = '';
+        if (includeFrozen && frozenFilename) {
+          frozenLink = `\n  <link rel="stylesheet" href="${frozenFilename}">`;
+        }
+
+        const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <link rel="stylesheet" href="../styles/cheatsheet.css">${frozenLink}
+  <!-- Prism.js for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body>
+  <div class="cheatsheet-container">
+${htmlContent}
+  </div>
+
+  <!-- Prism.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+</body>
+</html>`;
+
+        // Create download
+        const blob = new Blob([fullHTML], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        // Generate filename from title
+        const filename = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '.html';
+        a.download = filename;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        alert('Error generating HTML: ' + error.message);
+      }
+    }
+
+    function clearAll() {
+      if (confirm('Are you sure you want to clear all content?')) {
+        document.getElementById('markdownInput').value = '';
+        document.getElementById('titleInput').value = '';
+        document.getElementById('fileInput').value = '';
+        document.getElementById('preview').innerHTML = '<p style="color: #999; padding: 2rem; text-align: center;">Preview will appear here...</p>';
+        document.getElementById('frozenStylesheet').checked = false;
+        document.getElementById('frozenStylesheetPath').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
