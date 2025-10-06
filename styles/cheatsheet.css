@@ -11,15 +11,23 @@
 }
 
 :root {
-  /* Color Scheme */
+  /* Light Mode Color Scheme */
   --primary-color: #2c3e50;
   --secondary-color: #3498db;
   --accent-color: #e74c3c;
   --success-color: #27ae60;
   --warning-color: #f39c12;
   --bg-color: #ffffff;
+  --text-color: #2c3e50;
   --code-bg: #f7f9fa;
+  --code-border: #dfe6e9;
   --border-color: #dfe6e9;
+  --inline-code-color: #d63384;
+  --inline-code-bg: #f7f9fa;
+  --pre-bg: #f8f9fa;
+  --blockquote-bg: #fff9e6;
+  --table-stripe-bg: #f8f9fa;
+  --h2-text-color: white;
 
   /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -30,11 +38,33 @@
   --section-padding: 0.75rem;
 }
 
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #e0e0e0;
+    --secondary-color: #4a9eff;
+    --accent-color: #ff6b6b;
+    --success-color: #51cf66;
+    --warning-color: #ffd43b;
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --code-bg: #2d2d2d;
+    --code-border: #404040;
+    --border-color: #404040;
+    --inline-code-color: #ff79c6;
+    --inline-code-bg: #2d2d2d;
+    --pre-bg: #2d2d2d;
+    --blockquote-bg: #2a2a1a;
+    --table-stripe-bg: #252525;
+    --h2-text-color: #1a1a1a;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   font-size: 11px;
   line-height: 1.4;
-  color: var(--primary-color);
+  color: var(--text-color);
   background-color: var(--bg-color);
   padding: 0.5rem;
   min-height: 100vh;
@@ -65,7 +95,7 @@ h1 {
 h2 {
   font-size: 14px;
   font-weight: 700;
-  color: white;
+  color: var(--h2-text-color);
   background-color: var(--secondary-color);
   margin-top: 1rem;
   margin-bottom: 0.5rem;
@@ -107,16 +137,16 @@ li {
 code {
   font-family: var(--font-mono);
   font-size: 9px;
-  background-color: var(--code-bg);
+  background-color: var(--inline-code-bg);
   padding: 0.1rem 0.25rem;
   border-radius: 2px;
-  color: #d63384;
+  color: var(--inline-code-color);
 }
 
 /* Override for syntax highlighted code */
 pre {
-  background-color: #f8f9fa !important;
-  border: 1px solid var(--border-color) !important;
+  background-color: var(--pre-bg) !important;
+  border: 1px solid var(--code-border) !important;
   border-radius: 3px !important;
   padding: 0.5rem !important;
   margin: 0.4rem 0 !important;
@@ -136,7 +166,7 @@ pre code {
   text-shadow: none !important;
 }
 
-/* Prism.js token overrides for better print compatibility */
+/* Prism.js token overrides - Light mode */
 .token.comment,
 .token.prolog,
 .token.doctype,
@@ -192,6 +222,64 @@ pre code {
   color: #e36209;
 }
 
+/* Prism.js token overrides - Dark mode */
+@media (prefers-color-scheme: dark) {
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: #8b949e;
+  }
+
+  .token.punctuation {
+    color: #c9d1d9;
+  }
+
+  .token.property,
+  .token.tag,
+  .token.boolean,
+  .token.number,
+  .token.constant,
+  .token.symbol,
+  .token.deleted {
+    color: #79c0ff;
+  }
+
+  .token.selector,
+  .token.attr-name,
+  .token.string,
+  .token.char,
+  .token.builtin,
+  .token.inserted {
+    color: #a5d6ff;
+  }
+
+  .token.operator,
+  .token.entity,
+  .token.url,
+  .language-css .token.string,
+  .style .token.string {
+    color: #ff7b72;
+  }
+
+  .token.atrule,
+  .token.attr-value,
+  .token.keyword {
+    color: #ff7b72;
+  }
+
+  .token.function,
+  .token.class-name {
+    color: #d2a8ff;
+  }
+
+  .token.regex,
+  .token.important,
+  .token.variable {
+    color: #ffa657;
+  }
+}
+
 /* Sections - Keep together */
 .section, h2, h3 {
   break-inside: avoid;
@@ -224,8 +312,8 @@ table {
 }
 
 th {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--secondary-color);
+  color: var(--h2-text-color);
   padding: 0.4rem;
   text-align: left;
   font-weight: 600;
@@ -237,12 +325,12 @@ td {
 }
 
 tr:nth-child(even) {
-  background-color: #f8f9fa;
+  background-color: var(--table-stripe-bg);
 }
 
 /* Blockquotes - for important notes */
 blockquote {
-  background-color: #fff9e6;
+  background-color: var(--blockquote-bg);
   border-left: 4px solid var(--warning-color);
   padding: 0.5rem 0.75rem;
   margin: 0.5rem 0;

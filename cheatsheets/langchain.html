@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Langchain Cheat Sheet</title>
+  <link rel="stylesheet" href="../styles/cheatsheet.css">
+  <!-- Prism.js for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body>
+  <div class="cheatsheet-container">
+<h1>LangChain Quick Reference</h1>
+<h2>Installation &amp; Setup</h2>
+<h3>Install Core Packages</h3>
+<p>Get started with LangChain by installing the essential libraries.</p>
+<pre><code class="language-bash">pip install langchain langchain-core langchain-community
+pip install langgraph  # For agents and stateful apps
+pip install langchain-openai  # For OpenAI integration
+</code></pre>
+<h3>Basic LLM Setup</h3>
+<p>Initialize a chat model to start building LLM-powered applications.</p>
+<pre><code class="language-python">from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model=&quot;gpt-4&quot;,
+    temperature=0.7,
+    max_tokens=150
+)
+</code></pre>
+<h3>Environment Variables</h3>
+<p>Configure API credentials for third-party LLM providers.</p>
+<pre><code class="language-python">import os
+os.environ[&quot;OPENAI_API_KEY&quot;] = &quot;your-api-key&quot;
+</code></pre>
+<h2>Chat Models</h2>
+<h3>Send Messages</h3>
+<p>Communicate with the LLM using structured message objects for conversations.</p>
+<pre><code class="language-python">from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+
+messages = [
+    SystemMessage(content=&quot;You are a helpful assistant&quot;),
+    HumanMessage(content=&quot;Tell me a joke&quot;)
+]
+
+response = llm.invoke(messages)
+print(response.content)
+</code></pre>
+<h3>Streaming Response</h3>
+<p>Display responses in real-time as they&#39;re generated for better UX.</p>
+<pre><code class="language-python">for chunk in llm.stream(messages):
+    print(chunk.content, end=&quot;&quot;, flush=True)
+</code></pre>
+<h3>Batch Requests</h3>
+<p>Process multiple prompts efficiently in a single API call.</p>
+<pre><code class="language-python">responses = llm.batch([
+    [HumanMessage(content=&quot;What is 2+2?&quot;)],
+    [HumanMessage(content=&quot;What is 3+3?&quot;)]
+])
+</code></pre>
+<h2>LCEL (LangChain Expression Language)</h2>
+<h3>Basic Chain</h3>
+<p>Create sequential processing pipelines using the pipe operator.</p>
+<pre><code class="language-python">from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
+prompt = ChatPromptTemplate.from_messages([
+    (&quot;system&quot;, &quot;Translate to {language}&quot;),
+    (&quot;user&quot;, &quot;{text}&quot;)
+])
+
+chain = prompt | llm | StrOutputParser()
+
+result = chain.invoke({
+    &quot;language&quot;: &quot;French&quot;,
+    &quot;text&quot;: &quot;Hello world&quot;
+})
+</code></pre>
+<h3>Parallel Execution</h3>
+<p>Run multiple operations concurrently and combine results.</p>
+<pre><code class="language-python">from langchain_core.runnables import RunnableParallel
+
+chain = RunnableParallel({
+    &quot;translation&quot;: prompt | llm,
+    &quot;summary&quot;: summary_prompt | llm
+})
+
+result = chain.invoke({&quot;text&quot;: &quot;...&quot;})
+</code></pre>
+<h3>Runnable Lambda</h3>
+<p>Apply custom transformation functions within your chain pipelines.</p>
+<pre><code class="language-python">from langchain_core.runnables import RunnableLambda
+
+def transform(x):
+    return x.upper()
+
+chain = RunnableLambda(transform) | llm
+</code></pre>
+<h3>Async Invocation</h3>
+<p>Handle high-concurrency workloads with async support for chains.</p>
+<pre><code class="language-python">result = await chain.ainvoke({&quot;text&quot;: &quot;...&quot;})
+
+# Async streaming
+async for chunk in chain.astream({&quot;text&quot;: &quot;...&quot;}):
+    print(chunk)
+</code></pre>
+<h2>Prompt Templates</h2>
+<h3>Chat Prompt Template</h3>
+<p>Create reusable prompt templates with dynamic variable substitution.</p>
+<pre><code class="language-python">from langchain_core.prompts import ChatPromptTemplate
+
+prompt = ChatPromptTemplate.from_messages([
+    (&quot;system&quot;, &quot;You are a helpful assistant&quot;),
+    (&quot;user&quot;, &quot;Tell me about {topic}&quot;)
+])
+
+formatted = prompt.invoke({&quot;topic&quot;: &quot;Python&quot;})
+</code></pre>
+<h3>String Prompt Template</h3>
+<p>Build simple text-based prompts for non-chat models.</p>
+<pre><code class="language-python">from langchain_core.prompts import PromptTemplate
+
+prompt = PromptTemplate.from_template(
+    &quot;What is a good name for a company that makes {product}?&quot;
+)
+
+formatted = prompt.invoke({&quot;product&quot;: &quot;socks&quot;})
+</code></pre>
+<h3>Few-Shot Prompts</h3>
+<p>Provide examples to guide the model&#39;s responses.</p>
+<pre><code class="language-python">from langchain_core.prompts import FewShotChatMessagePromptTemplate
+
+examples = [
+    {&quot;input&quot;: &quot;2 + 2&quot;, &quot;output&quot;: &quot;4&quot;},
+    {&quot;input&quot;: &quot;2 + 3&quot;, &quot;output&quot;: &quot;5&quot;}
+]
+
+example_prompt = ChatPromptTemplate.from_messages([
+    (&quot;human&quot;, &quot;{input}&quot;),
+    (&quot;ai&quot;, &quot;{output}&quot;)
+])
+
+few_shot_prompt = FewShotChatMessagePromptTemplate(
+    example_prompt=example_prompt,
+    examples=examples
+)
+
+final_prompt = ChatPromptTemplate.from_messages([
+    (&quot;system&quot;, &quot;You are a math wizard&quot;),
+    few_shot_prompt,
+    (&quot;human&quot;, &quot;{input}&quot;)
+])
+</code></pre>
+<h3>Dynamic Few-Shot with Similarity</h3>
+<p>Automatically select the most relevant examples based on input similarity.</p>
+<pre><code class="language-python">from langchain_core.example_selectors import SemanticSimilarityExampleSelector
+
+example_selector = SemanticSimilarityExampleSelector(
+    vectorstore=vectorstore,
+    k=2  # Select 2 most similar examples
+)
+
+few_shot_prompt = FewShotChatMessagePromptTemplate(
+    example_selector=example_selector,
+    example_prompt=example_prompt
+)
+</code></pre>
+<h2>RAG (Retrieval Augmented Generation)</h2>
+<h3>Document Loading</h3>
+<p>Load documents from various sources like web pages, files, or databases.</p>
+<pre><code class="language-python">from langchain_community.document_loaders import WebBaseLoader
+import bs4
+
+loader = WebBaseLoader(
+    web_paths=(&quot;https://example.com/article&quot;,),
+    bs_kwargs=dict(
+        parse_only=bs4.SoupStrainer(
+            class_=(&quot;post-content&quot;, &quot;post-title&quot;)
+        )
+    )
+)
+docs = loader.load()
+</code></pre>
+<h3>Text Splitting</h3>
+<p>Break large documents into smaller chunks for better retrieval.</p>
+<pre><code class="language-python">from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+splits = text_splitter.split_documents(docs)
+</code></pre>
+<h3>Embeddings &amp; Vector Store</h3>
+<p>Convert text to embeddings and store them for semantic search.</p>
+<pre><code class="language-python">from langchain_openai import OpenAIEmbeddings
+from langchain_core.vectorstores import InMemoryVectorStore
+
+embeddings = OpenAIEmbeddings(model=&quot;text-embedding-3-large&quot;)
+vectorstore = InMemoryVectorStore(embeddings)
+
+# Add documents
+document_ids = vectorstore.add_documents(documents=splits)
+</code></pre>
+<h3>Retrieval</h3>
+<p>Find the most relevant documents using semantic similarity search.</p>
+<pre><code class="language-python"># Similarity search
+results = vectorstore.similarity_search(
+    &quot;What is the main topic?&quot;,
+    k=4  # Return top 4 results
+)
+
+# With scores
+results = vectorstore.similarity_search_with_score(&quot;query&quot;)
+</code></pre>
+<h3>RAG Chain</h3>
+<p>Combine retrieval and generation to answer questions using your documents.</p>
+<pre><code class="language-python">from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
+
+template = &quot;&quot;&quot;Answer based on the context:
+
+Context: {context}
+
+Question: {question}
+&quot;&quot;&quot;
+
+prompt = ChatPromptTemplate.from_template(template)
+
+def format_docs(docs):
+    return &quot;\n\n&quot;.join(doc.page_content for doc in docs)
+
+rag_chain = (
+    {
+        &quot;context&quot;: vectorstore.as_retriever() | format_docs,
+        &quot;question&quot;: RunnablePassthrough()
+    }
+    | prompt
+    | llm
+    | StrOutputParser()
+)
+
+answer = rag_chain.invoke(&quot;What is...?&quot;)
+</code></pre>
+<h2>Tools &amp; Function Calling</h2>
+<h3>Define Tools</h3>
+<p>Create custom tools that LLMs can call to perform specific actions.</p>
+<pre><code class="language-python">from langchain_core.tools import tool
+
+@tool
+def multiply(a: int, b: int) -&gt; int:
+    &quot;&quot;&quot;Multiply two numbers together.&quot;&quot;&quot;
+    return a * b
+
+@tool
+def search(query: str) -&gt; str:
+    &quot;&quot;&quot;Search the web for information.&quot;&quot;&quot;
+    return f&quot;Results for: {query}&quot;
+
+tools = [multiply, search]
+</code></pre>
+<h3>Bind Tools to Model</h3>
+<p>Enable the LLM to automatically call tools based on user input.</p>
+<pre><code class="language-python">llm_with_tools = llm.bind_tools(tools)
+
+response = llm_with_tools.invoke([
+    HumanMessage(content=&quot;What is 3 times 4?&quot;)
+])
+
+# Check for tool calls
+if response.tool_calls:
+    print(response.tool_calls)
+</code></pre>
+<h3>Structured Output</h3>
+<p>Force the LLM to return responses in a specific JSON schema format.</p>
+<pre><code class="language-python">from pydantic import BaseModel, Field
+
+class Person(BaseModel):
+    name: str = Field(description=&quot;Person&#39;s name&quot;)
+    age: int = Field(description=&quot;Person&#39;s age&quot;)
+    email: str = Field(description=&quot;Email address&quot;)
+
+structured_llm = llm.with_structured_output(Person)
+
+result = structured_llm.invoke(&quot;John is 30 years old, email john@example.com&quot;)
+print(result.name, result.age)
+</code></pre>
+<h2>Agents (Using LangGraph)</h2>
+<h3>Create ReAct Agent</h3>
+<p>Build agents that can reason and use tools iteratively.</p>
+<pre><code class="language-python">from langgraph.prebuilt import create_react_agent
+
+@tool
+def get_weather(city: str) -&gt; str:
+    &quot;&quot;&quot;Get the weather for a city.&quot;&quot;&quot;
+    return f&quot;It&#39;s sunny in {city}&quot;
+
+agent = create_react_agent(
+    model=llm,
+    tools=[get_weather],
+)
+
+response = agent.invoke({
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What&#39;s the weather in SF?&quot;}]
+})
+</code></pre>
+<h3>Agent with State</h3>
+<p>Build complex workflows with custom state management and control flow.</p>
+<pre><code class="language-python">from langgraph.graph import StateGraph, START, END
+from typing_extensions import TypedDict, Annotated
+from typing import List
+
+class State(TypedDict):
+    messages: Annotated[List, &quot;append&quot;]
+    context: str
+
+def retrieve(state: State):
+    # Retrieval logic
+    docs = vectorstore.similarity_search(state[&quot;messages&quot;][-1])
+    return {&quot;context&quot;: format_docs(docs)}
+
+def generate(state: State):
+    response = llm.invoke(state[&quot;messages&quot;])
+    return {&quot;messages&quot;: [response]}
+
+# Build graph
+graph = StateGraph(State)
+graph.add_node(&quot;retrieve&quot;, retrieve)
+graph.add_node(&quot;generate&quot;, generate)
+graph.add_edge(START, &quot;retrieve&quot;)
+graph.add_edge(&quot;retrieve&quot;, &quot;generate&quot;)
+graph.add_edge(&quot;generate&quot;, END)
+
+app = graph.compile()
+</code></pre>
+<h2>Memory &amp; Chat History</h2>
+<h3>Message History</h3>
+<p>Maintain conversation context across multiple turns for chatbot applications.</p>
+<pre><code class="language-python">from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
+
+store = {}
+
+def get_session_history(session_id: str):
+    if session_id not in store:
+        store[session_id] = InMemoryChatMessageHistory()
+    return store[session_id]
+
+chain_with_history = RunnableWithMessageHistory(
+    chain,
+    get_session_history,
+    input_messages_key=&quot;input&quot;,
+    history_messages_key=&quot;chat_history&quot;
+)
+
+response = chain_with_history.invoke(
+    {&quot;input&quot;: &quot;Hi, I&#39;m Alice&quot;},
+    config={&quot;configurable&quot;: {&quot;session_id&quot;: &quot;user123&quot;}}
+)
+</code></pre>
+<h3>Conversation Buffer Memory</h3>
+<p>Store and retrieve complete conversation history for legacy chain implementations.</p>
+<pre><code class="language-python">from langchain.memory import ConversationBufferMemory
+
+memory = ConversationBufferMemory(
+    return_messages=True,
+    memory_key=&quot;chat_history&quot;
+)
+
+memory.save_context(
+    {&quot;input&quot;: &quot;Hi&quot;},
+    {&quot;output&quot;: &quot;Hello! How can I help?&quot;}
+)
+
+history = memory.load_memory_variables({})
+</code></pre>
+<h2>Output Parsers</h2>
+<h3>String Output Parser</h3>
+<p>Extract plain text content from LLM message responses.</p>
+<pre><code class="language-python">from langchain_core.output_parsers import StrOutputParser
+
+parser = StrOutputParser()
+chain = prompt | llm | parser
+</code></pre>
+<h3>JSON Output Parser</h3>
+<p>Parse LLM responses into JSON dictionaries automatically.</p>
+<pre><code class="language-python">from langchain_core.output_parsers import JsonOutputParser
+
+parser = JsonOutputParser()
+chain = prompt | llm | parser
+</code></pre>
+<h3>Pydantic Output Parser</h3>
+<p>Validate and parse LLM output into strongly-typed Pydantic models.</p>
+<pre><code class="language-python">from langchain_core.output_parsers import PydanticOutputParser
+
+class Response(BaseModel):
+    answer: str
+    confidence: float
+
+parser = PydanticOutputParser(pydantic_object=Response)
+chain = prompt | llm | parser
+</code></pre>
+<h3>List Output Parser</h3>
+<p>Convert comma-separated text into Python lists automatically.</p>
+<pre><code class="language-python">from langchain_core.output_parsers import CommaSeparatedListOutputParser
+
+parser = CommaSeparatedListOutputParser()
+# Parses &quot;red, blue, green&quot; into [&quot;red&quot;, &quot;blue&quot;, &quot;green&quot;]
+</code></pre>
+<h2>Vector Stores</h2>
+<h3>Popular Vector Stores</h3>
+<p>Store embeddings in production-ready databases with persistence support.</p>
+<pre><code class="language-python"># Chroma
+from langchain_community.vectorstores import Chroma
+
+vectorstore = Chroma.from_documents(
+    documents=splits,
+    embedding=embeddings,
+    persist_directory=&quot;./chroma_db&quot;
+)
+
+# FAISS
+from langchain_community.vectorstores import FAISS
+
+vectorstore = FAISS.from_documents(splits, embeddings)
+vectorstore.save_local(&quot;faiss_index&quot;)
+
+# Load existing
+vectorstore = FAISS.load_local(&quot;faiss_index&quot;, embeddings)
+</code></pre>
+<h3>Retriever</h3>
+<p>Configure search strategies for optimal document retrieval in RAG applications.</p>
+<pre><code class="language-python"># Convert to retriever
+retriever = vectorstore.as_retriever(
+    search_type=&quot;similarity&quot;,
+    search_kwargs={&quot;k&quot;: 4}
+)
+
+docs = retriever.invoke(&quot;query&quot;)
+
+# MMR (Maximum Marginal Relevance) - diverse results
+retriever = vectorstore.as_retriever(
+    search_type=&quot;mmr&quot;,
+    search_kwargs={&quot;k&quot;: 4, &quot;fetch_k&quot;: 20}
+)
+</code></pre>
+<h2>Document Loaders</h2>
+<h3>Text Files</h3>
+<p>Load plain text files into LangChain document format.</p>
+<pre><code class="language-python">from langchain_community.document_loaders import TextLoader
+
+loader = TextLoader(&quot;file.txt&quot;)
+docs = loader.load()
+</code></pre>
+<h3>PDF</h3>
+<p>Extract text and metadata from PDF documents for processing.</p>
+<pre><code class="language-python">from langchain_community.document_loaders import PyPDFLoader
+
+loader = PyPDFLoader(&quot;document.pdf&quot;)
+pages = loader.load_and_split()
+</code></pre>
+<h3>CSV</h3>
+<p>Import tabular data from CSV files as documents.</p>
+<pre><code class="language-python">from langchain_community.document_loaders import CSVLoader
+
+loader = CSVLoader(&quot;data.csv&quot;)
+docs = loader.load()
+</code></pre>
+<h3>Web Pages</h3>
+<p>Scrape and load content from web pages.</p>
+<pre><code class="language-python">from langchain_community.document_loaders import WebBaseLoader
+
+loader = WebBaseLoader(&quot;https://example.com&quot;)
+docs = loader.load()
+</code></pre>
+<h3>Directory</h3>
+<p>Batch load all files from a directory matching a pattern.</p>
+<pre><code class="language-python">from langchain_community.document_loaders import DirectoryLoader
+
+loader = DirectoryLoader(&quot;./docs&quot;, glob=&quot;**/*.txt&quot;)
+docs = loader.load()
+</code></pre>
+<h2>Callbacks &amp; Debugging</h2>
+<h3>Streaming Callbacks</h3>
+<p>Print LLM output to console in real-time as it&#39;s generated.</p>
+<pre><code class="language-python">from langchain_core.callbacks import StreamingStdOutCallbackHandler
+
+llm = ChatOpenAI(
+    callbacks=[StreamingStdOutCallbackHandler()],
+    streaming=True
+)
+</code></pre>
+<h3>Debug Mode</h3>
+<p>Enable verbose logging to troubleshoot chain execution issues.</p>
+<pre><code class="language-python">import langchain
+langchain.debug = True
+
+# Now all chains will print detailed execution info
+</code></pre>
+<h3>Custom Callbacks</h3>
+<p>Track LLM calls and responses with custom logging or metrics.</p>
+<pre><code class="language-python">from langchain_core.callbacks import BaseCallbackHandler
+
+class MyCallback(BaseCallbackHandler):
+    def on_llm_start(self, serialized, prompts, **kwargs):
+        print(f&quot;LLM started with prompts: {prompts}&quot;)
+
+    def on_llm_end(self, response, **kwargs):
+        print(f&quot;LLM finished with response: {response}&quot;)
+
+llm = ChatOpenAI(callbacks=[MyCallback()])
+</code></pre>
+<h2>Common Patterns</h2>
+<h3>Conditional Routing</h3>
+<p>Route inputs to different chains based on content or conditions.</p>
+<pre><code class="language-python">from langchain_core.runnables import RunnableBranch
+
+branch = RunnableBranch(
+    (lambda x: &quot;code&quot; in x, code_chain),
+    (lambda x: &quot;math&quot; in x, math_chain),
+    general_chain  # default
+)
+</code></pre>
+<h3>Fallbacks</h3>
+<p>Automatically switch to backup LLMs when primary provider fails.</p>
+<pre><code class="language-python">from langchain_core.runnables import RunnableWithFallbacks
+
+chain = primary_llm.with_fallbacks([backup_llm])
+</code></pre>
+<h3>Retry</h3>
+<p>Add automatic retry logic with exponential backoff for reliability.</p>
+<pre><code class="language-python">from langchain_core.runnables import RunnableRetry
+
+chain = chain.with_retry(
+    stop_after_attempt=3,
+    wait_exponential_jitter=True
+)
+</code></pre>
+<h2>Tips &amp; Best Practices</h2>
+<ul>
+<li>Use <code>InMemoryVectorStore</code> for prototyping, switch to persistent stores for production</li>
+<li>Enable streaming for better UX with long responses</li>
+<li>Use LangGraph for complex agents with state management and cycles</li>
+<li>Leverage LCEL&#39;s async support for handling concurrent requests</li>
+<li>Monitor with LangSmith for production observability</li>
+<li>Keep chunk sizes between 500-2000 chars for RAG applications</li>
+<li>Use <code>RecursiveCharacterTextSplitter</code> for most text splitting needs</li>
+<li>Prefer LangGraph&#39;s <code>create_react_agent</code> over legacy agent implementations</li>
+</ul>
+
+  </div>
+
+  <!-- Prism.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+</body>
+</html>
